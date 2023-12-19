@@ -144,8 +144,6 @@ class Ui_MainWindow(object):
         self.StrandSort.setText(_translate("MainWindow", "Strand Sort"))
         self.PancakeSort.setText(_translate("MainWindow", "Pancake Sort"))
         self.GnomeSort.setText(_translate("MainWindow", "Gnome Sort"))
-        self.TreeSort.setText(_translate("MainWindow", "Tree Sort"))
-        self.PermutationSort.setText(_translate("MainWindow", "Permutation Sort"))
 
         self.SelectionSort.clicked.connect(lambda: SelectionSort(self.sorted_numbers))
         self.BubbleSort.clicked.connect(lambda: BubbleSort(self.sorted_numbers))
