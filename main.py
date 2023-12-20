@@ -1,177 +1,546 @@
 import random
 import time
-
 from PyQt5 import QtCore, QtGui, QtWidgets
+import threading
 
 Not_Sorted = []
 Sorted = []
+
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         self.num = 0
+
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(966, 737)
+        MainWindow.resize(1107, 790)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
-        self.centralwidget.setMinimumSize(QtCore.QSize(966, 0))
         self.centralwidget.setObjectName("centralwidget")
+        self.gridLayoutWidget = QtWidgets.QWidget(self.centralwidget)
+        self.gridLayoutWidget.setGeometry(QtCore.QRect(60, 30, 1001, 681))
+        self.gridLayoutWidget.setObjectName("gridLayoutWidget")
 
-        self.formLayoutWidget = QtWidgets.QWidget(self.centralwidget)
-        self.formLayoutWidget.setGeometry(QtCore.QRect(50, 20, 761, 704))
-        self.formLayoutWidget.setObjectName("formLayoutWidget")
-        self.formLayout = QtWidgets.QFormLayout(self.formLayoutWidget)
-        self.formLayout.setSizeConstraint(QtWidgets.QLayout.SetMaximumSize)
-        self.formLayout.setFieldGrowthPolicy(QtWidgets.QFormLayout.AllNonFixedFieldsGrow)
-        self.formLayout.setLabelAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTop|QtCore.Qt.AlignTrailing)
-        self.formLayout.setContentsMargins(0, 0, 0, 0)
-        self.formLayout.setObjectName("formLayout")
+        self.gridLayout_2 = QtWidgets.QGridLayout(self.gridLayoutWidget)
+        self.gridLayout_2.setContentsMargins(0, 0, 0, 0)
+        self.gridLayout_2.setObjectName("gridLayout_2")
 
-        self.verticalLayout_3 = QtWidgets.QVBoxLayout()
-        self.verticalLayout_3.setObjectName("verticalLayout_3")
+        self.selection_time = QtWidgets.QLabel(self.gridLayoutWidget)
+        self.selection_time.setFrameShape(QtWidgets.QFrame.WinPanel)
+        self.selection_time.setTextFormat(QtCore.Qt.AutoText)
+        self.selection_time.setScaledContents(True)
+        self.selection_time.setAlignment(QtCore.Qt.AlignCenter)
+        self.selection_time.setObjectName("selection_time")
+        self.gridLayout_2.addWidget(self.selection_time, 3, 2, 1, 1)
 
-        self.SelectionSort = QtWidgets.QPushButton(self.formLayoutWidget)
-        self.SelectionSort.setObjectName("SelectionSort")
-        self.verticalLayout_3.addWidget(self.SelectionSort)
+        self.bingo_time = QtWidgets.QLabel(self.gridLayoutWidget)
+        self.bingo_time.setFrameShape(QtWidgets.QFrame.WinPanel)
+        self.bingo_time.setTextFormat(QtCore.Qt.AutoText)
+        self.bingo_time.setScaledContents(True)
+        self.bingo_time.setAlignment(QtCore.Qt.AlignCenter)
+        self.bingo_time.setObjectName("bingo_time")
+        self.gridLayout_2.addWidget(self.bingo_time, 11, 2, 1, 1)
 
-        self.BubbleSort = QtWidgets.QPushButton(self.formLayoutWidget)
-        self.BubbleSort.setObjectName("BubbleSort")
-        self.verticalLayout_3.addWidget(self.BubbleSort)
+        self.random_numbers = QtWidgets.QLineEdit(self.gridLayoutWidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.random_numbers.sizePolicy().hasHeightForWidth())
+        self.random_numbers.setSizePolicy(sizePolicy)
+        self.random_numbers.setObjectName("random_numbers")
+        self.gridLayout_2.addWidget(self.random_numbers, 0, 1, 1, 1)
 
-        self.InsertionSort = QtWidgets.QPushButton(self.formLayoutWidget)
-        self.InsertionSort.setObjectName("InsertionSort")
-        self.verticalLayout_3.addWidget(self.InsertionSort)
+        self.bubble_sorted = QtWidgets.QLabel(self.gridLayoutWidget)
+        self.bubble_sorted.setFrameShape(QtWidgets.QFrame.WinPanel)
+        self.bubble_sorted.setTextFormat(QtCore.Qt.AutoText)
+        self.bubble_sorted.setScaledContents(True)
+        self.bubble_sorted.setAlignment(QtCore.Qt.AlignCenter)
+        self.bubble_sorted.setObjectName("bubble_sorted")
+        self.gridLayout_2.addWidget(self.bubble_sorted, 4, 1, 1, 1)
 
-        self.MergeSort = QtWidgets.QPushButton(self.formLayoutWidget)
-        self.MergeSort.setObjectName("MergeSort")
-        self.verticalLayout_3.addWidget(self.MergeSort)
+        self.quick_sorted = QtWidgets.QLabel(self.gridLayoutWidget)
+        self.quick_sorted.setFrameShape(QtWidgets.QFrame.WinPanel)
+        self.quick_sorted.setTextFormat(QtCore.Qt.AutoText)
+        self.quick_sorted.setScaledContents(True)
+        self.quick_sorted.setAlignment(QtCore.Qt.AlignCenter)
+        self.quick_sorted.setObjectName("quick_sorted")
+        self.gridLayout_2.addWidget(self.quick_sorted, 7, 1, 1, 1)
 
-        self.QuickSort = QtWidgets.QPushButton(self.formLayoutWidget)
-        self.QuickSort.setObjectName("QuickSort")
-        self.verticalLayout_3.addWidget(self.QuickSort)
+        self.insertion_sorted = QtWidgets.QLabel(self.gridLayoutWidget)
+        self.insertion_sorted.setFrameShape(QtWidgets.QFrame.WinPanel)
+        self.insertion_sorted.setTextFormat(QtCore.Qt.AutoText)
+        self.insertion_sorted.setScaledContents(True)
+        self.insertion_sorted.setAlignment(QtCore.Qt.AlignCenter)
+        self.insertion_sorted.setObjectName("insertion_sorted")
+        self.gridLayout_2.addWidget(self.insertion_sorted, 5, 1, 1, 1)
 
-        self.HeapSort = QtWidgets.QPushButton(self.formLayoutWidget)
-        self.HeapSort.setObjectName("HeapSort")
-        self.verticalLayout_3.addWidget(self.HeapSort)
+        self.merge_sorted = QtWidgets.QLabel(self.gridLayoutWidget)
+        self.merge_sorted.setFrameShape(QtWidgets.QFrame.WinPanel)
+        self.merge_sorted.setTextFormat(QtCore.Qt.AutoText)
+        self.merge_sorted.setScaledContents(True)
+        self.merge_sorted.setAlignment(QtCore.Qt.AlignCenter)
+        self.merge_sorted.setObjectName("merge_sorted")
+        self.gridLayout_2.addWidget(self.merge_sorted, 6, 1, 1, 1)
 
-        self.CountingSort = QtWidgets.QPushButton(self.formLayoutWidget)
-        self.CountingSort.setObjectName("CountingSort")
-        self.verticalLayout_3.addWidget(self.CountingSort)
+        self.heap_sorted = QtWidgets.QLabel(self.gridLayoutWidget)
+        self.heap_sorted.setFrameShape(QtWidgets.QFrame.WinPanel)
+        self.heap_sorted.setTextFormat(QtCore.Qt.AutoText)
+        self.heap_sorted.setScaledContents(True)
+        self.heap_sorted.setAlignment(QtCore.Qt.AlignCenter)
+        self.heap_sorted.setObjectName("heap_sorted")
+        self.gridLayout_2.addWidget(self.heap_sorted, 8, 1, 1, 1)
 
-        self.RadixSort = QtWidgets.QPushButton(self.formLayoutWidget)
-        self.RadixSort.setObjectName("RadixSort")
-        self.verticalLayout_3.addWidget(self.RadixSort)
+        self.radix_sorted = QtWidgets.QLabel(self.gridLayoutWidget)
+        self.radix_sorted.setFrameShape(QtWidgets.QFrame.WinPanel)
+        self.radix_sorted.setTextFormat(QtCore.Qt.AutoText)
+        self.radix_sorted.setScaledContents(True)
+        self.radix_sorted.setAlignment(QtCore.Qt.AlignCenter)
+        self.radix_sorted.setObjectName("radix_sorted")
+        self.gridLayout_2.addWidget(self.radix_sorted, 10, 1, 1, 1)
 
-        self.BingoSort = QtWidgets.QPushButton(self.formLayoutWidget)
-        self.BingoSort.setObjectName("BingoSort")
-        self.verticalLayout_3.addWidget(self.BingoSort)
+        self.counting_sorted = QtWidgets.QLabel(self.gridLayoutWidget)
+        self.counting_sorted.setFrameShape(QtWidgets.QFrame.WinPanel)
+        self.counting_sorted.setTextFormat(QtCore.Qt.AutoText)
+        self.counting_sorted.setScaledContents(True)
+        self.counting_sorted.setAlignment(QtCore.Qt.AlignCenter)
+        self.counting_sorted.setObjectName("counting_sorted")
+        self.gridLayout_2.addWidget(self.counting_sorted, 9, 1, 1, 1)
 
-        self.ShellSort = QtWidgets.QPushButton(self.formLayoutWidget)
-        self.ShellSort.setObjectName("ShellSort")
-        self.verticalLayout_3.addWidget(self.ShellSort)
+        self.bingo_sorted = QtWidgets.QLabel(self.gridLayoutWidget)
+        self.bingo_sorted.setFrameShape(QtWidgets.QFrame.WinPanel)
+        self.bingo_sorted.setTextFormat(QtCore.Qt.AutoText)
+        self.bingo_sorted.setScaledContents(True)
+        self.bingo_sorted.setAlignment(QtCore.Qt.AlignCenter)
+        self.bingo_sorted.setObjectName("bingo_sorted")
+        self.gridLayout_2.addWidget(self.bingo_sorted, 11, 1, 1, 1)
 
-        self.CombSort = QtWidgets.QPushButton(self.formLayoutWidget)
-        self.CombSort.setObjectName("CombSort")
-        self.verticalLayout_3.addWidget(self.CombSort)
+        self.cycle_sorted = QtWidgets.QLabel(self.gridLayoutWidget)
+        self.cycle_sorted.setFrameShape(QtWidgets.QFrame.WinPanel)
+        self.cycle_sorted.setTextFormat(QtCore.Qt.AutoText)
+        self.cycle_sorted.setScaledContents(True)
+        self.cycle_sorted.setAlignment(QtCore.Qt.AlignCenter)
+        self.cycle_sorted.setObjectName("cycle_sorted")
+        self.gridLayout_2.addWidget(self.cycle_sorted, 15, 1, 1, 1)
 
-        self.PigeonholeSort = QtWidgets.QPushButton(self.formLayoutWidget)
-        self.PigeonholeSort.setObjectName("PigeonholeSort")
-        self.verticalLayout_3.addWidget(self.PigeonholeSort)
+        self.comb_sorted = QtWidgets.QLabel(self.gridLayoutWidget)
+        self.comb_sorted.setFrameShape(QtWidgets.QFrame.WinPanel)
+        self.comb_sorted.setTextFormat(QtCore.Qt.AutoText)
+        self.comb_sorted.setScaledContents(True)
+        self.comb_sorted.setAlignment(QtCore.Qt.AlignCenter)
+        self.comb_sorted.setObjectName("comb_sorted")
+        self.gridLayout_2.addWidget(self.comb_sorted, 13, 1, 1, 1)
 
-        self.CycleSort = QtWidgets.QPushButton(self.formLayoutWidget)
-        self.CycleSort.setObjectName("CycleSort")
-        self.verticalLayout_3.addWidget(self.CycleSort)
+        self.pigeonhole_sorted = QtWidgets.QLabel(self.gridLayoutWidget)
+        self.pigeonhole_sorted.setFrameShape(QtWidgets.QFrame.WinPanel)
+        self.pigeonhole_sorted.setTextFormat(QtCore.Qt.AutoText)
+        self.pigeonhole_sorted.setScaledContents(True)
+        self.pigeonhole_sorted.setAlignment(QtCore.Qt.AlignCenter)
+        self.pigeonhole_sorted.setObjectName("pigeonhole_sorted")
+        self.gridLayout_2.addWidget(self.pigeonhole_sorted, 14, 1, 1, 1)
 
-        self.StrandSort = QtWidgets.QPushButton(self.formLayoutWidget)
-        self.StrandSort.setObjectName("StrandSort")
-        self.verticalLayout_3.addWidget(self.StrandSort)
+        self.shell_sorted = QtWidgets.QLabel(self.gridLayoutWidget)
+        self.shell_sorted.setFrameShape(QtWidgets.QFrame.WinPanel)
+        self.shell_sorted.setTextFormat(QtCore.Qt.AutoText)
+        self.shell_sorted.setScaledContents(True)
+        self.shell_sorted.setAlignment(QtCore.Qt.AlignCenter)
+        self.shell_sorted.setObjectName("shell_sorted")
+        self.gridLayout_2.addWidget(self.shell_sorted, 12, 1, 1, 1)
 
-        self.PancakeSort = QtWidgets.QPushButton(self.formLayoutWidget)
-        self.PancakeSort.setObjectName("PancakeSort")
-        self.verticalLayout_3.addWidget(self.PancakeSort)
+        self.strand_sorted = QtWidgets.QLabel(self.gridLayoutWidget)
+        self.strand_sorted.setFrameShape(QtWidgets.QFrame.WinPanel)
+        self.strand_sorted.setTextFormat(QtCore.Qt.AutoText)
+        self.strand_sorted.setScaledContents(True)
+        self.strand_sorted.setAlignment(QtCore.Qt.AlignCenter)
+        self.strand_sorted.setObjectName("strand_sorted")
+        self.gridLayout_2.addWidget(self.strand_sorted, 16, 1, 1, 1)
 
-        self.GnomeSort = QtWidgets.QPushButton(self.formLayoutWidget)
-        self.GnomeSort.setObjectName("GnomeSort")
-        self.verticalLayout_3.addWidget(self.GnomeSort)
+        self.pancake_sorted = QtWidgets.QLabel(self.gridLayoutWidget)
+        self.pancake_sorted.setFrameShape(QtWidgets.QFrame.WinPanel)
+        self.pancake_sorted.setTextFormat(QtCore.Qt.AutoText)
+        self.pancake_sorted.setScaledContents(True)
+        self.pancake_sorted.setAlignment(QtCore.Qt.AlignCenter)
+        self.pancake_sorted.setObjectName("pancake_sorted")
+        self.gridLayout_2.addWidget(self.pancake_sorted, 17, 1, 1, 1)
 
-        self.formLayout.setLayout(1, QtWidgets.QFormLayout.LabelRole, self.verticalLayout_3)
-        self.gridLayout = QtWidgets.QGridLayout()
-        self.gridLayout.setObjectName("gridLayout")
+        self.gnome_time = QtWidgets.QLabel(self.gridLayoutWidget)
+        self.gnome_time.setFrameShape(QtWidgets.QFrame.WinPanel)
+        self.gnome_time.setTextFormat(QtCore.Qt.AutoText)
+        self.gnome_time.setScaledContents(True)
+        self.gnome_time.setAlignment(QtCore.Qt.AlignCenter)
+        self.gnome_time.setObjectName("gnome_time")
+        self.gridLayout_2.addWidget(self.gnome_time, 18, 2, 1, 1)
 
-        self.RandomButton = QtWidgets.QPushButton(self.formLayoutWidget)
-        self.RandomButton.setObjectName("RandomButton")
-        self.gridLayout.addWidget(self.RandomButton, 0, 1, 1, 1)
+        self.gnome_sorted = QtWidgets.QLabel(self.gridLayoutWidget)
+        self.gnome_sorted.setFrameShape(QtWidgets.QFrame.WinPanel)
+        self.gnome_sorted.setTextFormat(QtCore.Qt.AutoText)
+        self.gnome_sorted.setScaledContents(True)
+        self.gnome_sorted.setAlignment(QtCore.Qt.AlignCenter)
+        self.gnome_sorted.setObjectName("gnome_sorted")
+        self.gridLayout_2.addWidget(self.gnome_sorted, 18, 1, 1, 1)
 
-        self.sorted_numbers = QtWidgets.QLabel(self.formLayoutWidget)
-        self.sorted_numbers.setObjectName("sorted_numbers")
-        self.gridLayout.addWidget(self.sorted_numbers, 2, 1, 1, 1)
+        self.pancake_time = QtWidgets.QLabel(self.gridLayoutWidget)
+        self.pancake_time.setFrameShape(QtWidgets.QFrame.WinPanel)
+        self.pancake_time.setTextFormat(QtCore.Qt.AutoText)
+        self.pancake_time.setScaledContents(True)
+        self.pancake_time.setAlignment(QtCore.Qt.AlignCenter)
+        self.pancake_time.setObjectName("pancake_time")
+        self.gridLayout_2.addWidget(self.pancake_time, 17, 2, 1, 1)
 
-        self.SizeOfNumber = QtWidgets.QLineEdit(self.formLayoutWidget)
-        self.SizeOfNumber.setObjectName("how many number in the list")
-        self.gridLayout.addWidget(self.SizeOfNumber, 0, 0, 1, 1)
+        self.strand_time = QtWidgets.QLabel(self.gridLayoutWidget)
+        self.strand_time.setFrameShape(QtWidgets.QFrame.WinPanel)
+        self.strand_time.setTextFormat(QtCore.Qt.AutoText)
+        self.strand_time.setScaledContents(True)
+        self.strand_time.setAlignment(QtCore.Qt.AlignCenter)
+        self.strand_time.setObjectName("strand_time")
+        self.gridLayout_2.addWidget(self.strand_time, 16, 2, 1, 1)
 
-        self.not_sorted_numbers = QtWidgets.QLineEdit(self.formLayoutWidget)
-        self.gridLayout.addWidget(self.not_sorted_numbers, 2, 0, 1, 1)
+        self.pigeonhole_time = QtWidgets.QLabel(self.gridLayoutWidget)
+        self.pigeonhole_time.setFrameShape(QtWidgets.QFrame.WinPanel)
+        self.pigeonhole_time.setTextFormat(QtCore.Qt.AutoText)
+        self.pigeonhole_time.setScaledContents(True)
+        self.pigeonhole_time.setAlignment(QtCore.Qt.AlignCenter)
+        self.pigeonhole_time.setObjectName("pigeonhole_time")
+        self.gridLayout_2.addWidget(self.pigeonhole_time, 14, 2, 1, 1)
 
-        self.not_sorted_label = QtWidgets.QLabel(self.formLayoutWidget)
+        self.comb_time = QtWidgets.QLabel(self.gridLayoutWidget)
+        self.comb_time.setFrameShape(QtWidgets.QFrame.WinPanel)
+        self.comb_time.setTextFormat(QtCore.Qt.AutoText)
+        self.comb_time.setScaledContents(True)
+        self.comb_time.setAlignment(QtCore.Qt.AlignCenter)
+        self.comb_time.setObjectName("comb_time")
+        self.gridLayout_2.addWidget(self.comb_time, 13, 2, 1, 1)
+
+        self.cycle_time = QtWidgets.QLabel(self.gridLayoutWidget)
+        self.cycle_time.setFrameShape(QtWidgets.QFrame.WinPanel)
+        self.cycle_time.setTextFormat(QtCore.Qt.AutoText)
+        self.cycle_time.setScaledContents(True)
+        self.cycle_time.setAlignment(QtCore.Qt.AlignCenter)
+        self.cycle_time.setObjectName("cycle_time")
+        self.gridLayout_2.addWidget(self.cycle_time, 15, 2, 1, 1)
+
+        self.shell_time = QtWidgets.QLabel(self.gridLayoutWidget)
+        self.shell_time.setFrameShape(QtWidgets.QFrame.WinPanel)
+        self.shell_time.setTextFormat(QtCore.Qt.AutoText)
+        self.shell_time.setScaledContents(True)
+        self.shell_time.setAlignment(QtCore.Qt.AlignCenter)
+        self.shell_time.setObjectName("shell_time")
+        self.gridLayout_2.addWidget(self.shell_time, 12, 2, 1, 1)
+
+        self.user_entered_num = QtWidgets.QLineEdit(self.gridLayoutWidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.user_entered_num.sizePolicy().hasHeightForWidth())
+        self.user_entered_num.setSizePolicy(sizePolicy)
+        self.user_entered_num.setObjectName("user_entered_num")
+        self.gridLayout_2.addWidget(self.user_entered_num, 1, 1, 1, 1)
+
+        self.counting_time = QtWidgets.QLabel(self.gridLayoutWidget)
+        self.counting_time.setFrameShape(QtWidgets.QFrame.WinPanel)
+        self.counting_time.setTextFormat(QtCore.Qt.AutoText)
+        self.counting_time.setScaledContents(True)
+        self.counting_time.setAlignment(QtCore.Qt.AlignCenter)
+        self.counting_time.setObjectName("counting_time")
+        self.gridLayout_2.addWidget(self.counting_time, 9, 2, 1, 1)
+
+        self.cycle_sort_label = QtWidgets.QLabel(self.gridLayoutWidget)
+        self.cycle_sort_label.setFrameShape(QtWidgets.QFrame.WinPanel)
+        self.cycle_sort_label.setTextFormat(QtCore.Qt.AutoText)
+        self.cycle_sort_label.setScaledContents(True)
+        self.cycle_sort_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.cycle_sort_label.setObjectName("cycle_sort_label")
+        self.gridLayout_2.addWidget(self.cycle_sort_label, 15, 0, 1, 1)
+
+        self.comb_sort_label = QtWidgets.QLabel(self.gridLayoutWidget)
+        self.comb_sort_label.setFrameShape(QtWidgets.QFrame.WinPanel)
+        self.comb_sort_label.setTextFormat(QtCore.Qt.AutoText)
+        self.comb_sort_label.setScaledContents(True)
+        self.comb_sort_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.comb_sort_label.setObjectName("comb_sort_label")
+        self.gridLayout_2.addWidget(self.comb_sort_label, 13, 0, 1, 1)
+
+        self.pigeonhole_sort_label = QtWidgets.QLabel(self.gridLayoutWidget)
+        self.pigeonhole_sort_label.setFrameShape(QtWidgets.QFrame.WinPanel)
+        self.pigeonhole_sort_label.setTextFormat(QtCore.Qt.AutoText)
+        self.pigeonhole_sort_label.setScaledContents(True)
+        self.pigeonhole_sort_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.pigeonhole_sort_label.setObjectName("pigeonhole_sort_label")
+        self.gridLayout_2.addWidget(self.pigeonhole_sort_label, 14, 0, 1, 1)
+
+        self.strand_sort_label = QtWidgets.QLabel(self.gridLayoutWidget)
+        self.strand_sort_label.setFrameShape(QtWidgets.QFrame.WinPanel)
+        self.strand_sort_label.setTextFormat(QtCore.Qt.AutoText)
+        self.strand_sort_label.setScaledContents(True)
+        self.strand_sort_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.strand_sort_label.setObjectName("strand_sort_label")
+        self.gridLayout_2.addWidget(self.strand_sort_label, 16, 0, 1, 1)
+
+        self.pancake_sort_label = QtWidgets.QLabel(self.gridLayoutWidget)
+        self.pancake_sort_label.setFrameShape(QtWidgets.QFrame.WinPanel)
+        self.pancake_sort_label.setTextFormat(QtCore.Qt.AutoText)
+        self.pancake_sort_label.setScaledContents(True)
+        self.pancake_sort_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.pancake_sort_label.setObjectName("pancake_sort_label")
+        self.gridLayout_2.addWidget(self.pancake_sort_label, 17, 0, 1, 1)
+
+        self.selection_sorted = QtWidgets.QLabel(self.gridLayoutWidget)
+        self.selection_sorted.setFrameShape(QtWidgets.QFrame.WinPanel)
+        self.selection_sorted.setTextFormat(QtCore.Qt.AutoText)
+        self.selection_sorted.setScaledContents(True)
+        self.selection_sorted.setAlignment(QtCore.Qt.AlignCenter)
+        self.selection_sorted.setObjectName("selection_sorted")
+        self.gridLayout_2.addWidget(self.selection_sorted, 3, 1, 1, 1)
+
+        self.insertion_time = QtWidgets.QLabel(self.gridLayoutWidget)
+        self.insertion_time.setFrameShape(QtWidgets.QFrame.WinPanel)
+        self.insertion_time.setTextFormat(QtCore.Qt.AutoText)
+        self.insertion_time.setScaledContents(True)
+        self.insertion_time.setAlignment(QtCore.Qt.AlignCenter)
+        self.insertion_time.setObjectName("insertion_time")
+        self.gridLayout_2.addWidget(self.insertion_time, 5, 2, 1, 1)
+
+        self.heap_time = QtWidgets.QLabel(self.gridLayoutWidget)
+        self.heap_time.setFrameShape(QtWidgets.QFrame.WinPanel)
+        self.heap_time.setTextFormat(QtCore.Qt.AutoText)
+        self.heap_time.setScaledContents(True)
+        self.heap_time.setAlignment(QtCore.Qt.AlignCenter)
+        self.heap_time.setObjectName("heap_time")
+        self.gridLayout_2.addWidget(self.heap_time, 8, 2, 1, 1)
+
+        self.merge_time = QtWidgets.QLabel(self.gridLayoutWidget)
+        self.merge_time.setFrameShape(QtWidgets.QFrame.WinPanel)
+        self.merge_time.setTextFormat(QtCore.Qt.AutoText)
+        self.merge_time.setScaledContents(True)
+        self.merge_time.setAlignment(QtCore.Qt.AlignCenter)
+        self.merge_time.setObjectName("merge_time")
+        self.gridLayout_2.addWidget(self.merge_time, 6, 2, 1, 1)
+
+        self.gnome_sort_label = QtWidgets.QLabel(self.gridLayoutWidget)
+        self.gnome_sort_label.setFrameShape(QtWidgets.QFrame.WinPanel)
+        self.gnome_sort_label.setTextFormat(QtCore.Qt.AutoText)
+        self.gnome_sort_label.setScaledContents(True)
+        self.gnome_sort_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.gnome_sort_label.setObjectName("gnome_sort_label")
+        self.gridLayout_2.addWidget(self.gnome_sort_label, 18, 0, 1, 1)
+
+        self.quick_time = QtWidgets.QLabel(self.gridLayoutWidget)
+        self.quick_time.setFrameShape(QtWidgets.QFrame.WinPanel)
+        self.quick_time.setTextFormat(QtCore.Qt.AutoText)
+        self.quick_time.setScaledContents(True)
+        self.quick_time.setAlignment(QtCore.Qt.AlignCenter)
+        self.quick_time.setObjectName("quick_time")
+        self.gridLayout_2.addWidget(self.quick_time, 7, 2, 1, 1)
+
+        self.bubble_time = QtWidgets.QLabel(self.gridLayoutWidget)
+        self.bubble_time.setFrameShape(QtWidgets.QFrame.WinPanel)
+        self.bubble_time.setTextFormat(QtCore.Qt.AutoText)
+        self.bubble_time.setScaledContents(True)
+        self.bubble_time.setAlignment(QtCore.Qt.AlignCenter)
+        self.bubble_time.setObjectName("bubble_time")
+        self.gridLayout_2.addWidget(self.bubble_time, 4, 2, 1, 1)
+
+        self.random_numbers_button = QtWidgets.QPushButton(self.gridLayoutWidget)
+        self.random_numbers_button.setObjectName("random_numbers_button")
+        self.gridLayout_2.addWidget(self.random_numbers_button, 0, 2, 1, 1)
+
+        self.random_number_label = QtWidgets.QLabel(self.gridLayoutWidget)
+        self.random_number_label.setFrameShape(QtWidgets.QFrame.WinPanel)
+        self.random_number_label.setTextFormat(QtCore.Qt.AutoText)
+        self.random_number_label.setScaledContents(True)
+        self.random_number_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.random_number_label.setObjectName("random_number_label")
+        self.gridLayout_2.addWidget(self.random_number_label, 0, 0, 1, 1)
+
+        self.user_entered_numbers_label = QtWidgets.QLabel(self.gridLayoutWidget)
+        self.user_entered_numbers_label.setFrameShape(QtWidgets.QFrame.WinPanel)
+        self.user_entered_numbers_label.setTextFormat(QtCore.Qt.AutoText)
+        self.user_entered_numbers_label.setScaledContents(True)
+        self.user_entered_numbers_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.user_entered_numbers_label.setObjectName("user_entered_numbers_label")
+        self.gridLayout_2.addWidget(self.user_entered_numbers_label, 1, 0, 1, 1)
+
+        self.user_entered_numbers_button = QtWidgets.QPushButton(self.gridLayoutWidget)
+        self.user_entered_numbers_button.setObjectName("user_entered_numbers_button")
+        self.gridLayout_2.addWidget(self.user_entered_numbers_button, 1, 2, 1, 1)
+
+        self.insertion_sort_label = QtWidgets.QLabel(self.gridLayoutWidget)
+        self.insertion_sort_label.setFrameShape(QtWidgets.QFrame.WinPanel)
+        self.insertion_sort_label.setTextFormat(QtCore.Qt.AutoText)
+        self.insertion_sort_label.setScaledContents(True)
+        self.insertion_sort_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.insertion_sort_label.setObjectName("insertion_sort_label")
+        self.gridLayout_2.addWidget(self.insertion_sort_label, 5, 0, 1, 1)
+
+        self.merge_sort_label = QtWidgets.QLabel(self.gridLayoutWidget)
+        self.merge_sort_label.setFrameShape(QtWidgets.QFrame.WinPanel)
+        self.merge_sort_label.setTextFormat(QtCore.Qt.AutoText)
+        self.merge_sort_label.setScaledContents(True)
+        self.merge_sort_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.merge_sort_label.setObjectName("merge_sort_label")
+        self.gridLayout_2.addWidget(self.merge_sort_label, 6, 0, 1, 1)
+
+        self.selection_sort_label = QtWidgets.QLabel(self.gridLayoutWidget)
+        self.selection_sort_label.setFrameShape(QtWidgets.QFrame.WinPanel)
+        self.selection_sort_label.setTextFormat(QtCore.Qt.AutoText)
+        self.selection_sort_label.setScaledContents(True)
+        self.selection_sort_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.selection_sort_label.setObjectName("selection_sort_label")
+        self.gridLayout_2.addWidget(self.selection_sort_label, 3, 0, 1, 1)
+
+        self.bubble_sort_label = QtWidgets.QLabel(self.gridLayoutWidget)
+        self.bubble_sort_label.setFrameShape(QtWidgets.QFrame.WinPanel)
+        self.bubble_sort_label.setTextFormat(QtCore.Qt.AutoText)
+        self.bubble_sort_label.setScaledContents(True)
+        self.bubble_sort_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.bubble_sort_label.setObjectName("bubble_sort_label")
+        self.gridLayout_2.addWidget(self.bubble_sort_label, 4, 0, 1, 1)
+
+        self.quick_sort_label = QtWidgets.QLabel(self.gridLayoutWidget)
+        self.quick_sort_label.setFrameShape(QtWidgets.QFrame.WinPanel)
+        self.quick_sort_label.setTextFormat(QtCore.Qt.AutoText)
+        self.quick_sort_label.setScaledContents(True)
+        self.quick_sort_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.quick_sort_label.setObjectName("quick_sort_label")
+        self.gridLayout_2.addWidget(self.quick_sort_label, 7, 0, 1, 1)
+
+        self.heap_sort_label = QtWidgets.QLabel(self.gridLayoutWidget)
+        self.heap_sort_label.setFrameShape(QtWidgets.QFrame.WinPanel)
+        self.heap_sort_label.setTextFormat(QtCore.Qt.AutoText)
+        self.heap_sort_label.setScaledContents(True)
+        self.heap_sort_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.heap_sort_label.setObjectName("heap_sort_label")
+        self.gridLayout_2.addWidget(self.heap_sort_label, 8, 0, 1, 1)
+
+        self.counting_sort_label = QtWidgets.QLabel(self.gridLayoutWidget)
+        self.counting_sort_label.setFrameShape(QtWidgets.QFrame.WinPanel)
+        self.counting_sort_label.setTextFormat(QtCore.Qt.AutoText)
+        self.counting_sort_label.setScaledContents(True)
+        self.counting_sort_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.counting_sort_label.setObjectName("counting_sort_label")
+        self.gridLayout_2.addWidget(self.counting_sort_label, 9, 0, 1, 1)
+
+        self.radix_sort_label = QtWidgets.QLabel(self.gridLayoutWidget)
+        self.radix_sort_label.setFrameShape(QtWidgets.QFrame.WinPanel)
+        self.radix_sort_label.setTextFormat(QtCore.Qt.AutoText)
+        self.radix_sort_label.setScaledContents(True)
+        self.radix_sort_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.radix_sort_label.setObjectName("radix_sort_label")
+        self.gridLayout_2.addWidget(self.radix_sort_label, 10, 0, 1, 1)
+
+        self.shell_sort_label = QtWidgets.QLabel(self.gridLayoutWidget)
+        self.shell_sort_label.setFrameShape(QtWidgets.QFrame.WinPanel)
+        self.shell_sort_label.setTextFormat(QtCore.Qt.AutoText)
+        self.shell_sort_label.setScaledContents(True)
+        self.shell_sort_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.shell_sort_label.setObjectName("shell_sort_label")
+        self.gridLayout_2.addWidget(self.shell_sort_label, 12, 0, 1, 1)
+
+        self.bingo_sort_label = QtWidgets.QLabel(self.gridLayoutWidget)
+        self.bingo_sort_label.setFrameShape(QtWidgets.QFrame.WinPanel)
+        self.bingo_sort_label.setTextFormat(QtCore.Qt.AutoText)
+        self.bingo_sort_label.setScaledContents(True)
+        self.bingo_sort_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.bingo_sort_label.setObjectName("bingo_sort_label")
+        self.gridLayout_2.addWidget(self.bingo_sort_label, 11, 0, 1, 1)
+
+        self.radix_time = QtWidgets.QLabel(self.gridLayoutWidget)
+        self.radix_time.setFrameShape(QtWidgets.QFrame.WinPanel)
+        self.radix_time.setTextFormat(QtCore.Qt.AutoText)
+        self.radix_time.setScaledContents(True)
+        self.radix_time.setAlignment(QtCore.Qt.AlignCenter)
+        self.radix_time.setObjectName("radix_time")
+        self.gridLayout_2.addWidget(self.radix_time, 10, 2, 1, 1)
+
+        self.not_sorted_numbers = QtWidgets.QLabel(self.gridLayoutWidget)
+        self.not_sorted_numbers.setFrameShape(QtWidgets.QFrame.WinPanel)
+        self.not_sorted_numbers.setTextFormat(QtCore.Qt.AutoText)
+        self.not_sorted_numbers.setScaledContents(True)
+        self.not_sorted_numbers.setAlignment(QtCore.Qt.AlignCenter)
+        self.not_sorted_numbers.setObjectName("not_sorted_numbers")
+        self.gridLayout_2.addWidget(self.not_sorted_numbers, 2, 1, 1, 1)
+
+        self.not_sorted_label = QtWidgets.QLabel(self.gridLayoutWidget)
+        self.not_sorted_label.setFrameShape(QtWidgets.QFrame.WinPanel)
+        self.not_sorted_label.setTextFormat(QtCore.Qt.AutoText)
+        self.not_sorted_label.setScaledContents(True)
+        self.not_sorted_label.setAlignment(QtCore.Qt.AlignCenter)
         self.not_sorted_label.setObjectName("not_sorted_label")
-        self.gridLayout.addWidget(self.not_sorted_label, 1, 0, 1, 1)
+        self.gridLayout_2.addWidget(self.not_sorted_label, 2, 0, 1, 1)
 
-        self.sorted_label = QtWidgets.QLabel(self.formLayoutWidget)
-        self.sorted_label.setObjectName("sorted_label")
-        self.gridLayout.addWidget(self.sorted_label, 1, 1, 1, 1)
-
-        self.formLayout.setLayout(1, QtWidgets.QFormLayout.FieldRole, self.gridLayout)
         MainWindow.setCentralWidget(self.centralwidget)
+        self.menubar = QtWidgets.QMenuBar(MainWindow)
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1107, 26))
+        self.menubar.setObjectName("menubar")
+        MainWindow.setMenuBar(self.menubar)
+        self.statusbar = QtWidgets.QStatusBar(MainWindow)
+        self.statusbar.setObjectName("statusbar")
+        MainWindow.setStatusBar(self.statusbar)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
-        global Not_Sorted
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.SelectionSort.setText(_translate("MainWindow", "Selection Sort"))
-        self.BubbleSort.setText(_translate("MainWindow", "Bubble Sort"))
-        self.InsertionSort.setText(_translate("MainWindow", "Insertion Sort"))
-        self.MergeSort.setText(_translate("MainWindow", "Merge Sort"))
-        self.QuickSort.setText(_translate("MainWindow", "Quick Sort"))
-        self.HeapSort.setText(_translate("MainWindow", "Heap Sort"))
-        self.CountingSort.setText(_translate("MainWindow", "Counting Sort"))
-        self.RadixSort.setText(_translate("MainWindow", "Radix Sort"))
-        self.BingoSort.setText(_translate("MainWindow", "Bingo Sort"))
-        self.ShellSort.setText(_translate("MainWindow", "Shell Sort"))
-        self.CombSort.setText(_translate("MainWindow", "Comb Sort"))
-        self.PigeonholeSort.setText(_translate("MainWindow", "Pigeonhole Sort"))
-        self.CycleSort.setText(_translate("MainWindow", "Cycle Sort"))
-        self.StrandSort.setText(_translate("MainWindow", "Strand Sort"))
-        self.PancakeSort.setText(_translate("MainWindow", "Pancake Sort"))
-        self.GnomeSort.setText(_translate("MainWindow", "Gnome Sort"))
+        self.selection_time.setText(_translate("MainWindow", "Time Elapsed:"))
+        self.bingo_time.setText(_translate("MainWindow", "Time Elapsed:"))
+        self.bubble_sorted.setText(_translate("MainWindow", "0"))
+        self.quick_sorted.setText(_translate("MainWindow", "0"))
+        self.insertion_sorted.setText(_translate("MainWindow", "0"))
+        self.merge_sorted.setText(_translate("MainWindow", "0"))
+        self.heap_sorted.setText(_translate("MainWindow", "0"))
+        self.radix_sorted.setText(_translate("MainWindow", "0"))
+        self.counting_sorted.setText(_translate("MainWindow", "0"))
+        self.bingo_sorted.setText(_translate("MainWindow", "0"))
+        self.cycle_sorted.setText(_translate("MainWindow", "0"))
+        self.comb_sorted.setText(_translate("MainWindow", "0"))
+        self.pigeonhole_sorted.setText(_translate("MainWindow", "0"))
+        self.shell_sorted.setText(_translate("MainWindow", "0"))
+        self.strand_sorted.setText(_translate("MainWindow", "0"))
+        self.pancake_sorted.setText(_translate("MainWindow", "0"))
+        self.gnome_time.setText(_translate("MainWindow", "Time Elapsed:"))
+        self.gnome_sorted.setText(_translate("MainWindow", "0"))
+        self.pancake_time.setText(_translate("MainWindow", "Time Elapsed:"))
+        self.strand_time.setText(_translate("MainWindow", "Time Elapsed:"))
+        self.pigeonhole_time.setText(_translate("MainWindow", "Time Elapsed:"))
+        self.comb_time.setText(_translate("MainWindow", "Time Elapsed:"))
+        self.cycle_time.setText(_translate("MainWindow", "Time Elapsed:"))
+        self.shell_time.setText(_translate("MainWindow", "Time Elapsed:"))
+        self.counting_time.setText(_translate("MainWindow", "Time Elapsed:"))
+        self.cycle_sort_label.setText(_translate("MainWindow", "Cycle Sort"))
+        self.comb_sort_label.setText(_translate("MainWindow", "Comb Sort"))
+        self.pigeonhole_sort_label.setText(_translate("MainWindow", "Pigeonhole Sort"))
+        self.strand_sort_label.setText(_translate("MainWindow", "Strand Sort"))
+        self.pancake_sort_label.setText(_translate("MainWindow", "Pancake Sort"))
+        self.selection_sorted.setText(_translate("MainWindow", "0"))
+        self.insertion_time.setText(_translate("MainWindow", "Time Elapsed:"))
+        self.heap_time.setText(_translate("MainWindow", "Time Elapsed:"))
+        self.merge_time.setText(_translate("MainWindow", "Time Elapsed:"))
+        self.gnome_sort_label.setText(_translate("MainWindow", "Gnome Sort"))
+        self.quick_time.setText(_translate("MainWindow", "Time Elapsed:"))
+        self.bubble_time.setText(_translate("MainWindow", "Time Elapsed:"))
+        self.random_numbers_button.setText(_translate("MainWindow", "Generate"))
+        self.random_number_label.setText(_translate("MainWindow", "Enter a number for how many  will be generate"))
+        self.user_entered_numbers_label.setText(_translate("MainWindow", "Enter your numbers using comma "))
+        self.user_entered_numbers_button.setText(_translate("MainWindow", "Run"))
+        self.insertion_sort_label.setText(_translate("MainWindow", "Insertion Sort"))
+        self.merge_sort_label.setText(_translate("MainWindow", "Merge Sort"))
+        self.selection_sort_label.setText(_translate("MainWindow", "Selection Sort"))
+        self.bubble_sort_label.setText(_translate("MainWindow", "Bubble Sort"))
+        self.quick_sort_label.setText(_translate("MainWindow", "Quick Sort"))
+        self.heap_sort_label.setText(_translate("MainWindow", "Heap Sort"))
+        self.counting_sort_label.setText(_translate("MainWindow", "Counting Sort"))
+        self.radix_sort_label.setText(_translate("MainWindow", "Radix Sort"))
+        self.shell_sort_label.setText(_translate("MainWindow", "Shell Sort"))
+        self.bingo_sort_label.setText(_translate("MainWindow", "Bingo Sort"))
+        self.radix_time.setText(_translate("MainWindow", "Time Elapsed:"))
+        self.not_sorted_numbers.setText(_translate("MainWindow", "0"))
+        self.not_sorted_label.setText(_translate("MainWindow", "Not Sorted number list"))
 
-        self.SelectionSort.clicked.connect(lambda: SelectionSort(self.sorted_numbers))
-        self.BubbleSort.clicked.connect(lambda: BubbleSort(self.sorted_numbers))
-        self.InsertionSort.clicked.connect(lambda: InsertionSort(self.sorted_numbers))
-        self.MergeSort.clicked.connect(lambda: MergeSort(self.sorted_numbers))
-        self.QuickSort.clicked.connect(lambda: QuickSort(self.sorted_numbers))
-        self.HeapSort.clicked.connect(lambda: HeapSort(self.sorted_numbers))
-        self.CountingSort.clicked.connect(lambda: CountingSort(self.sorted_numbers))
-        self.RadixSort.clicked.connect(lambda: RadixSort(self.sorted_numbers))
-        self.BingoSort.clicked.connect(lambda: BingoSort(self.sorted_numbers))
-        self.ShellSort.clicked.connect(lambda: ShellSort(self.sorted_numbers))
-        self.CombSort.clicked.connect(lambda: CombSort(self.sorted_numbers))
-        self.PigeonholeSort.clicked.connect(lambda: PigeonholeSort(self.sorted_numbers))
-        self.CycleSort.clicked.connect(lambda: CycleSort(self.sorted_numbers))
-        self.StrandSort.clicked.connect(lambda: StrandSort(self.sorted_numbers))
-        self.PancakeSort.clicked.connect(lambda: PancakeSort(self.sorted_numbers))
-        self.GnomeSort.clicked.connect(lambda: GnomeSort(self.sorted_numbers))
-
-        self.sorted_numbers.setText(_translate("MainWindow", "TextLabel"))
-        self.not_sorted_label.setText(_translate("MainWindow", "Enter your numbers using comma in between"))
-        self.sorted_label.setText(_translate("MainWindow", "Numbers are ordered min to max are below"))
-        self.RandomButton.setText(_translate("MainWindow", "Randomly select"))
-        self.SizeOfNumber.textChanged.connect(lambda: self.getValue())
-        self.not_sorted_numbers.textChanged.connect((lambda: self.create_list()))
-        self.RandomButton.clicked.connect(lambda: RandomButton(self.num))
+        self.random_numbers.textChanged.connect(lambda: self.getValue())
+        self.user_entered_num.textChanged.connect(lambda: self.create_list())
+        self.random_numbers_button.clicked.connect(lambda: RandomButton(self.num, self.not_sorted_numbers))
+        self.user_entered_numbers_button.clicked.connect(lambda: threads(self))
 
     def getValue(self):
-       self.num = self.SizeOfNumber.text()
+       self.num = self.random_numbers.text()
 
     def create_list(self):
         global Not_Sorted
@@ -179,6 +548,58 @@ class Ui_MainWindow(object):
         text = self.not_sorted_numbers.text()
         Not_Sorted = text.split(",")
         Sorted = Not_Sorted
+
+def threads(self):
+    t1 = threading.Thread(target=SelectionSort, args=(self.selection_sorted, self.selection_time))
+    t2 = threading.Thread(target=BubbleSort, args=(self.bubble_sorted, self.bubble_time))
+    t3 = threading.Thread(target=InsertionSort, args=(self.insertion_sorted, self.insertion_time))
+    t4 = threading.Thread(target=MergeSort, args=(self.merge_sorted, self.merge_time))
+    t5 = threading.Thread(target=QuickSort, args=(self.quick_sorted, self.quick_time))
+    t6 = threading.Thread(target=HeapSort, args=(self.heap_sorted, self.heap_time))
+    t7 = threading.Thread(target=CountingSort, args=(self.counting_sorted, self.counting_time))
+    t8 = threading.Thread(target=RadixSort, args=(self.radix_sorted, self.radix_time))
+    t9 = threading.Thread(target=BingoSort, args=(self.bingo_sorted, self.bingo_time))
+    t10 = threading.Thread(target=ShellSort, args=(self.shell_sorted, self.shell_time))
+    t11 = threading.Thread(target=CombSort, args=(self.comb_sorted, self.comb_time))
+    t12 = threading.Thread(target=PigeonholeSort, args=(self.pigeonhole_sorted, self.pigeonhole_time))
+    t13 = threading.Thread(target=CycleSort, args=(self.cycle_sorted, self.cycle_time))
+    t14 = threading.Thread(target=StrandSort, args=(self.strand_sorted, self.strand_time))
+    t15 = threading.Thread(target=PancakeSort, args=(self.pancake_sorted, self.pancake_time))
+    t16 = threading.Thread(target=GnomeSort, args=(self.gnome_sorted, self.gnome_time))
+
+    t1.start()
+    t2.start()
+    t3.start()
+    t4.start()
+    t5.start()
+    t6.start()
+    t7.start()
+    t8.start()
+    t9.start()
+    t10.start()
+    t11.start()
+    t12.start()
+    t13.start()
+    t14.start()
+    t15.start()
+    t16.start()
+
+    t1.join()
+    t2.join()
+    t3.join()
+    t4.join()
+    t5.join()
+    t6.join()
+    t7.join()
+    t8.join()
+    t9.join()
+    t10.join()
+    t11.join()
+    t12.join()
+    t13.join()
+    t14.join()
+    t15.join()
+    t16.join()
 
 def List_To_String(text):
     txt = ""
@@ -188,7 +609,7 @@ def List_To_String(text):
         else:
             txt = txt + ", " + str(i)
     return txt
-def SelectionSort(sorted_numbers):
+def SelectionSort(sorted_numbers, time_label):
     start = time.process_time()
     Sorted = Not_Sorted
     temp = 0
@@ -204,13 +625,12 @@ def SelectionSort(sorted_numbers):
         Sorted[i] = Sorted[temp]
         Sorted[temp] = temp1
 
-    clock = "time passed: " + str(start)
-    sorted_numbers.setText(f"<html>{List_To_String(Sorted)}<br/>{clock}</html>")
+    sorted_numbers.setText(List_To_String(Sorted))
+    time_label.setText("Time Elapsed: " + str(start))
 
-def BubbleSort(sorted_numbers):
+def BubbleSort(sorted_numbers,time_label):
     start = time.process_time()
     counti = 0
-    print(Sorted)
     for i in Not_Sorted:
         countj = 0
         for j in Not_Sorted:
@@ -221,10 +641,10 @@ def BubbleSort(sorted_numbers):
             countj += 1
         counti += 1
 
-    clock = "time passed: " + str(start)
-    sorted_numbers.setText(f"<html>{List_To_String(Sorted)}<br/>{clock}</html>")
+    sorted_numbers.setText(List_To_String(Sorted))
+    time_label.setText("Time Elapsed: " + str(start))
 
-def InsertionSort(sorted_numbers):
+def InsertionSort(sorted_numbers,time_label):
     start = time.process_time()
     for i in range(len(Not_Sorted)):
         if i < len(Not_Sorted)-1:
@@ -234,7 +654,6 @@ def InsertionSort(sorted_numbers):
                 Not_Sorted[i+1] = Not_Sorted[i]
                 Not_Sorted[i] = temp
             while i-j >= 0:
-                print(Not_Sorted)
                 if Not_Sorted[i] < Not_Sorted[i-j]:
                     temp = Not_Sorted[i-j]
                     Not_Sorted[i-j] = Not_Sorted[i]
@@ -243,16 +662,16 @@ def InsertionSort(sorted_numbers):
                 else:
                     break
 
-    clock = "time passed: " + str(start)
-    sorted_numbers.setText(f"<html>{List_To_String(Sorted)}<br/>{clock}</html>")
+    sorted_numbers.setText(List_To_String(Sorted))
+    time_label.setText("Time Elapsed: " + str(start))
 
-def MergeSort(sorted_numbers):
+def MergeSort(sorted_numbers,time_label):
     start = time.process_time()
     Sorted = Not_Sorted
     merge_sort(Not_Sorted)
 
-    clock = "time passed: " + str(start)
-    sorted_numbers.setText(f"<html>{List_To_String(Sorted)}<br/>{clock}</html>")
+    sorted_numbers.setText(List_To_String(Sorted))
+    time_label.setText("Time Elapsed: " + str(start))
 
 def merge_sort(arr):
     if len(arr) > 1:
@@ -296,15 +715,15 @@ def quickSort(temp,low, high):
         quickSort(temp, low, pi - 1)
         quickSort(temp, pi + 1, high)
 
-def QuickSort(sorted_numbers):
+def QuickSort(sorted_numbers,time_label):
     start = time.process_time()
     temp = Not_Sorted
     low = 0
     high = len(temp) - 1
     quickSort(temp, low, high)
 
-    clock = "time passed: " + str(start)
-    sorted_numbers.setText(f"<html>{List_To_String(temp)}<br/>{clock}</html>")
+    sorted_numbers.setText(List_To_String(Sorted))
+    time_label.setText("Time Elapsed: " + str(start))
 
 def heapify(arr, N, i):
     largest = i
@@ -317,7 +736,7 @@ def heapify(arr, N, i):
     if largest != i:
         arr[i], arr[largest] = arr[largest], arr[i]
         heapify(arr, N, largest)
-def HeapSort(sorted_numbers):
+def HeapSort(sorted_numbers, time_label):
     start = time.process_time()
     Sorted = Not_Sorted
     N = len(Not_Sorted)
@@ -327,10 +746,10 @@ def HeapSort(sorted_numbers):
         Not_Sorted[i], Not_Sorted[0] = Not_Sorted[0], Not_Sorted[i]  # swap
         heapify(Not_Sorted, i, 0)
 
-    clock = "time passed: " + str(start)
-    sorted_numbers.setText(f"<html>{List_To_String(Sorted)}<br/>{clock}</html>")
+    sorted_numbers.setText(List_To_String(Sorted))
+    time_label.setText("Time Elapsed: " + str(start))
 
-def CountingSort(sorted_numbers):
+def CountingSort(sorted_numbers,time_label):
     start = time.process_time()
     Sorted = Not_Sorted
     Maximun = max(Not_Sorted)
@@ -352,10 +771,10 @@ def CountingSort(sorted_numbers):
         Sorted[count_array[Not_Sorted[i]] - 1] = Not_Sorted[i]
         count_array[Not_Sorted[i]] -= 1
 
-    clock = "time passed: " + str(start)
-    sorted_numbers.setText(f"<html>{List_To_String(Sorted)}<br/>{clock}</html>")
+    sorted_numbers.setText(List_To_String(Sorted))
+    time_label.setText("Time Elapsed: " + str(start))
 
-def RadixSort(sorted_numbers):
+def RadixSort(sorted_numbers,time_label):
     start = time.process_time()
     Sorted = Not_Sorted
 
@@ -365,8 +784,8 @@ def RadixSort(sorted_numbers):
         radixCountSort(Not_Sorted, exp)
         exp *= 10
 
-    clock = "time passed: " + str(start)
-    sorted_numbers.setText(f"<html>{List_To_String(Sorted)}<br/>{clock}</html>")
+    sorted_numbers.setText(List_To_String(Sorted))
+    time_label.setText("Time Elapsed: " + str(start))
 
 def radixCountSort(Not_Sorted, exp1):
     n = len(Not_Sorted)
@@ -390,7 +809,7 @@ def radixCountSort(Not_Sorted, exp1):
     for i in range(0, len(Not_Sorted)):
         Sorted[i] = Inv_Sorted[i]
 
-def BingoSort(sorted_numbers):
+def BingoSort(sorted_numbers,time_label):
     start = time.process_time()
     Sorted = Not_Sorted
 
@@ -410,10 +829,10 @@ def BingoSort(sorted_numbers):
         bingo = nextBingo
         nextBingo = largest
 
-    clock = "time passed: " + str(start)
-    sorted_numbers.setText(f"<html>{List_To_String(Sorted)}<br/>{clock}</html>")
+    sorted_numbers.setText(List_To_String(Sorted))
+    time_label.setText("Time Elapsed: " + str(start))
 
-def ShellSort(sorted_numbers):
+def ShellSort(sorted_numbers,time_label):
     start = time.process_time()
     Sorted = Not_Sorted
     length = len(Sorted)
@@ -431,8 +850,8 @@ def ShellSort(sorted_numbers):
             j += 1
         gap = gap // 2
 
-    clock = "time passed: " + str(start)
-    sorted_numbers.setText(f"<html>{List_To_String(Sorted)}<br/>{clock}</html>")
+    sorted_numbers.setText(List_To_String(Sorted))
+    time_label.setText("Time Elapsed: " + str(start))
 
 def getNextGap(gap):
     # Shrink gap by Shrink factor
@@ -440,7 +859,7 @@ def getNextGap(gap):
     if gap < 1:
         return 1
     return gap
-def CombSort(sorted_numbers):
+def CombSort(sorted_numbers,time_label):
     start = time.process_time()
     Sorted = Not_Sorted
     length = len(Sorted)
@@ -454,10 +873,10 @@ def CombSort(sorted_numbers):
                 Sorted[i], Sorted[i + gap] = Sorted[i + gap], Sorted[i]
                 swapped = True
 
-    clock = "time passed: " + str(start)
-    sorted_numbers.setText(f"<html>{List_To_String(Sorted)}<br/>{clock}</html>")
+    sorted_numbers.setText(List_To_String(Sorted))
+    time_label.setText("Time Elapsed: " + str(start))
 
-def PigeonholeSort(sorted_numbers):
+def PigeonholeSort(sorted_numbers,time_label):
     start = time.process_time()
     Sorted = Not_Sorted
 
@@ -475,10 +894,10 @@ def PigeonholeSort(sorted_numbers):
             Sorted[i] = count + my_min
             i += 1
 
-    clock = "time passed: " + str(start)
-    sorted_numbers.setText(f"<html>{List_To_String(Sorted)}<br/>{clock}</html>")
+    sorted_numbers.setText(List_To_String(Sorted))
+    time_label.setText("Time Elapsed: " + str(start))
 
-def CycleSort(sorted_numbers):
+def CycleSort(sorted_numbers,time_label):
     start = time.process_time()
     Sorted = Not_Sorted
     writes = 0
@@ -509,9 +928,8 @@ def CycleSort(sorted_numbers):
             Sorted[pos], item = item, Sorted[pos]
             writes += 1
 
-    clock = "time passed: " + str(start)
-    sorted_numbers.setText(f"<html>{List_To_String(Sorted)}<br/>{clock}</html>")
-
+    sorted_numbers.setText(List_To_String(Sorted))
+    time_label.setText("Time Elapsed: " + str(start))
 
 def strand_sort(temp):
     # Define a helper function to merge two sorted lists
@@ -539,15 +957,15 @@ def strand_sort(temp):
     remaining_list = strand_sort(temp)
     return merge_lists(sorted_sublist, remaining_list)
 
-def StrandSort(sorted_numbers):
+def StrandSort(sorted_numbers,time_label):
     start = time.process_time()
 
     Sorted = strand_sort(Not_Sorted)
 
-    clock = "time passed: " + str(start)
-    sorted_numbers.setText(f"<html>{List_To_String(Sorted)}<br/>{clock}</html>")
+    sorted_numbers.setText(List_To_String(Sorted))
+    time_label.setText("Time Elapsed: " + str(start))
 
-def PancakeSort(sorted_numbers):
+def PancakeSort(sorted_numbers,time_label):
     start = time.process_time()
     Sorted = Not_Sorted
     current_size = len(Sorted)
@@ -574,10 +992,10 @@ def PancakeSort(sorted_numbers):
             flip(Sorted, current_size - 1)
         current_size -= 1
 
-    clock = "time passed: " + str(start)
-    sorted_numbers.setText(f"<html>{List_To_String(Sorted)}<br/>{clock}</html>")
+    sorted_numbers.setText(List_To_String(Sorted))
+    time_label.setText("Time Elapsed: " + str(start))
 
-def GnomeSort(sorted_numbers):
+def GnomeSort(sorted_numbers,time_label):
     start = time.process_time()
     Sorted = Not_Sorted
     length = len(Sorted)
@@ -592,10 +1010,10 @@ def GnomeSort(sorted_numbers):
             Sorted[index], Sorted[index - 1] = Sorted[index - 1], Sorted[index]
             index = index - 1
 
-    clock = "time passed: " + str(start)
-    sorted_numbers.setText(f"<html>{List_To_String(Sorted)}<br/>{clock}</html>")
+    sorted_numbers.setText(List_To_String(Sorted))
+    time_label.setText("Time Elapsed: " + str(start))
 
-def RandomButton(num):
+def RandomButton(num, not_sorted_num):
     global Sorted
     global Not_Sorted
     count = 0
@@ -603,6 +1021,10 @@ def RandomButton(num):
         Not_Sorted.append(random.randint(1, 100))
         count += 1
     Sorted = Not_Sorted
+    txt =""
+    for i in Not_Sorted:
+        txt = txt + str(i) + ","
+    not_sorted_num.setText(txt)
 
 if __name__ == "__main__":
     import sys
